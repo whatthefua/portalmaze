@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <style id="css">
+            @font-face {
+                font-family: Quark;
+                src: url("assets/Quark-Light.otf") format("opentype");
+            }
+        </style>
+        
+        <script type="text/javascript" src="controller.js"></script>
+        <script type="text/javascript" src="game.min.js"></script>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="levelButtons.min.js"></script>
+        <script type="text/javascript" src="minheap.js"></script>
+        <script type="text/javascript" src="misc.js"></script>
+        <script type="text/javascript" src="randomButtons.js"></script>
+        <script type="text/javascript" src="random.js"></script>
+        <script type="text/javascript" src="rect.js"></script>
+        <script type="text/javascript" src="selector.js"></script>
+        <script type="text/javascript" src="set.js"></script>
+        <script type="text/javascript" src="text.js"></script>
+        <script type="text/javascript" src="tile.min.js"></script>
+        <script type="text/javascript" src="tilePosition.js"></script>
+    </head>
+    
+    <body>
+        <canvas id="mainCanvas" width="640" height="480"></canvas>
+        
+        <p style="font-family: Quark; font-size: 8px; visibility: hidden;">.</p>
+        
+        <script type="text/javascript">
+            window.onload = function()
+            {
+                $.ajaxSetup({ cache: false });
+                window.canvas = document.getElementById("mainCanvas");
+                window.ctx = window.canvas.getContext("2d");
+                
+                if(localStorage.getItem("lastLevel") === null)
+                {
+                    localStorage.setItem("lastLevel",1);
+                }
+                
+                window.GC = new controller();
+                
+                window.setInterval(function() {
+                    window.GC.render();
+                },33);
+                
+                document.body.addEventListener('mousemove', function(e) {
+                    getMousePos(window.canvas,e);
+                    
+                    if(window.mouseX <= 0 || window.mouseX >= 640 || window.mouseY <= 0 || window.mouseY >= 480)
+                    {
+                        for(var i = 0; i < window.GC.objects.length; i++)
+                        {
+                            if(window.GC.objects[i].obj.dragged == true)
+                            {
+                                window.GC.objects[i].obj.dragged = false;
+                                window.GC.objects[i].obj.posX = window.GC.objects[i].obj.originalX;
+                                window.GC.objects[i].obj.posY = window.GC.objects[i].obj.originalY;
+                            }
+                        }
+                    }
+                });
+                
+                if(localStorage.getItem("playedDivide") != "YES")
+                {
+                    launchTutorial();
+                } else {
+                    launchMenu();
+                }
+                
+                $("#mainCanvas").mousedown(function() {
+                    window.GC.mouseDown(); 
+                });
+                
+                $("#mainCanvas").mouseup(function() {
+                    window.GC.mouseUp(); 
+                });
+            };
+        </script>
+    </body>
+</html>
