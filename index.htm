@@ -1,33 +1,16 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <style id="css">
-            @font-face {
-                font-family: Quark;
-                src: url("assets/Quark-Light.otf") format("opentype");
-            }
-        </style>
-        
         <script type="text/javascript" src="controller.js"></script>
-        <script type="text/javascript" src="game.min.js"></script>
         <script type="text/javascript" src="jquery.min.js"></script>
-        <script type="text/javascript" src="levelButtons.min.js"></script>
+        <script type="text/javascript" src="maze.js"></script>
         <script type="text/javascript" src="minheap.js"></script>
-        <script type="text/javascript" src="misc.js"></script>
-        <script type="text/javascript" src="randomButtons.js"></script>
-        <script type="text/javascript" src="random.js"></script>
         <script type="text/javascript" src="rect.js"></script>
-        <script type="text/javascript" src="selector.js"></script>
-        <script type="text/javascript" src="set.js"></script>
         <script type="text/javascript" src="text.js"></script>
-        <script type="text/javascript" src="tile.min.js"></script>
-        <script type="text/javascript" src="tilePosition.js"></script>
     </head>
     
     <body>
-        <canvas id="mainCanvas" width="640" height="480"></canvas>
-        
-        <p style="font-family: Quark; font-size: 8px; visibility: hidden;">.</p>
+        <canvas id="mainCanvas" width="640" height="480" tabindex="1"></canvas>
         
         <script type="text/javascript">
             window.onload = function()
@@ -36,47 +19,30 @@
                 window.canvas = document.getElementById("mainCanvas");
                 window.ctx = window.canvas.getContext("2d");
                 
-                if(localStorage.getItem("lastLevel") === null)
-                {
-                    localStorage.setItem("lastLevel",1);
-                }
-                
                 window.GC = new controller();
                 
                 window.setInterval(function() {
                     window.GC.render();
                 },33);
                 
-                document.body.addEventListener('mousemove', function(e) {
-                    getMousePos(window.canvas,e);
-                    
-                    if(window.mouseX <= 0 || window.mouseX >= 640 || window.mouseY <= 0 || window.mouseY >= 480)
-                    {
-                        for(var i = 0; i < window.GC.objects.length; i++)
-                        {
-                            if(window.GC.objects[i].obj.dragged == true)
-                            {
-                                window.GC.objects[i].obj.dragged = false;
-                                window.GC.objects[i].obj.posX = window.GC.objects[i].obj.originalX;
-                                window.GC.objects[i].obj.posY = window.GC.objects[i].obj.originalY;
-                            }
-                        }
-                    }
-                });
-                
-                if(localStorage.getItem("playedDivide") != "YES")
-                {
-                    launchTutorial();
-                } else {
-                    launchMenu();
-                }
+                window.test = new maze(100,100,40,5,5,"c08fefe9999584935843528958032",{ x: 0, y: 0 },{ x: 4, y: 4});
+                window.test.decodeData();
+                window.GC.addObject(100,window.test,1);
                 
                 $("#mainCanvas").mousedown(function() {
                     window.GC.mouseDown(); 
                 });
                 
-                $("#mainCanvas").mouseup(function() {
-                    window.GC.mouseUp(); 
+                $("#mainCanvas").keypress(function(e) {
+                    
+                    
+                    switch(e.keyCode)
+                    {
+                        case 37: window.test.moveLeft(); break;
+                        case 38: window.test.moveUp(); break;
+                        case 39: window.test.moveRight(); break;
+                        case 40: window.test.moveDown(); break;
+                    }
                 });
             };
         </script>
